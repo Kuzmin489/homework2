@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Optional;
 
@@ -29,7 +30,9 @@ public class IpStackCountryResolver implements CountryResolver {
     public Optional<String> getCountryCode(String ip) {
         String finalUrl = upStackUrl + ip;
         try {
-            IpStackResposne ipStackResposne = restTemplate.getForObject(finalUrl, IpStackResposne.class, ipStackSecretKey);
+            UriComponentsBuilder builder = UriComponentsBuilder
+                    .fromUriString(finalUrl).queryParam("access_key", ipStackSecretKey);
+            IpStackResposne ipStackResposne = restTemplate.getForObject(builder.toUriString(), IpStackResposne.class);
             return Optional.ofNullable(ipStackResposne)
                     .map(IpStackResposne::getCountryCode);
         } catch (Exception e) {
