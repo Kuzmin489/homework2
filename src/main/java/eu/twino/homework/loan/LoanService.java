@@ -30,13 +30,18 @@ public class LoanService {
     }
 
     @Transactional
-    public void applyForLoan(LoanRequest loanRequest) {
+    public Loan applyForLoan(LoanRequest loanRequest) {
 
         LoanStatus loanStatus = loanValidationService.validateLoanRequest(loanRequest);
 
         Loan loan = loanMapper.loanRequestToLoan(loanRequest, loanStatus, LocalDateTime.now());
         LoanEntity loanEntity = loanMapper.domainToEntity(loan);
-        loanRepository.save(loanEntity);
+        if (loanRepository.existsById(loanRequest.getPersonalId())) {
+            throw new LoanAlreadyAppliedException(loanRequest.getPersonalId());
+        }
+        LoanEntity savedLoan =  loanRepository.save(loanEntity);
+
+        return loanMapper.entityToDomain(savedLoan);
     }
 
     @Transactional(readOnly = true)

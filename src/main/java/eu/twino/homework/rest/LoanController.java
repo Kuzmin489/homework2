@@ -1,10 +1,10 @@
 package eu.twino.homework.rest;
 
 import eu.twino.homework.countryresolver.CountryResolver;
-import eu.twino.homework.loan.Loan;
-import eu.twino.homework.loan.LoanRequest;
-import eu.twino.homework.loan.LoanService;
+import eu.twino.homework.loan.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,13 +39,23 @@ public class LoanController {
     }
 
     @PostMapping
-    public void applyForLoan(@RequestBody @Valid LoanRequestDto loanRequestDto, HttpServletRequest request) {
+    public LoanDto applyForLoan(@RequestBody @Valid LoanRequestDto loanRequestDto, HttpServletRequest request) {
         String originCountry = WebUtils.getClientIp(request)
                 .flatMap(countryResolver::getCountryCode)
                 .orElse("LV");
 
         LoanRequest loanRequest = loanMapper.dtoToRequest(loanRequestDto, originCountry);
-        loanService.applyForLoan(loanRequest);
+
+        Loan appliedLoad =  loanService.applyForLoan(loanRequest);
+        return loanMapper.modelToDto(appliedLoad);
+    }
+
+    @ExceptionHandler(LoanAlreadyAppliedException.class)
+    public ResponseEntity<Error> spittleNotFound(
+            LoanAlreadyAppliedException e) {
+        String personId = e.getPersonCode();
+        Error error = new Error(1, "Loan for person with perosn id:  " + personId + " already applied");
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
 
