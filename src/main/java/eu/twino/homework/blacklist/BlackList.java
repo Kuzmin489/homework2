@@ -12,9 +12,23 @@ public class BlackList {
 
     private String reason;
 
+    public BlackList() {
+        //for hibernate
+    }
+
     public BlackList(String personId, String reason) {
         this.personId = personId;
         this.reason = reason;
+    }
+
+    public BlackList setPersonId(String personId) {
+        this.personId = personId;
+        return this;
+    }
+
+    public BlackList setReason(String reason) {
+        this.reason = reason;
+        return this;
     }
 
     public String getPersonId() {

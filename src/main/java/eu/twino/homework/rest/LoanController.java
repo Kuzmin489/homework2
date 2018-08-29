@@ -31,10 +31,10 @@ public class LoanController {
 
     @GetMapping
     public List<LoanDto> getAppliedLoans(
-                                         @RequestParam(value="limit", defaultValue="10") int limit,
-                                         @RequestParam(value="offset", defaultValue="0") int offset,
-                                         @RequestParam(value="sortField", defaultValue="applyDate") String sortField) {
-        List<Loan> loans = loanService.getAppliedLoans(limit, offset, sortField);
+                                         @RequestParam(value="page", defaultValue="0") int page,
+                                         @RequestParam(value="pageSize", defaultValue="10") int pageSize
+    ) {
+        List<Loan> loans = loanService.getAppliedLoans(page, pageSize);
         return loanMapper.modelListToDto(loans);
     }
 

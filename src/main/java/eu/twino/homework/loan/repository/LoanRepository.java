@@ -1,7 +1,12 @@
 package eu.twino.homework.loan.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import eu.twino.homework.loan.LoanStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface LoanRepository extends CrudRepository<LoanEntity, String>, LoanRepositoryCustom {
+public interface LoanRepository extends PagingAndSortingRepository<LoanEntity, String> {
+
+    Page<LoanEntity> getLoanEntityByLoanStatus(LoanStatus loanStatus, Pageable pageable);
 
 }

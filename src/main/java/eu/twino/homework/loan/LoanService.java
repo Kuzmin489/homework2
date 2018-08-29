@@ -4,6 +4,8 @@ import eu.twino.homework.loan.repository.LoanEntity;
 import eu.twino.homework.loan.repository.LoanRepository;
 import eu.twino.homework.loan.validation.LoanValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,8 +40,8 @@ public class LoanService {
     }
 
     @Transactional(readOnly = true)
-    public List<Loan> getAppliedLoans(Integer offset, Integer limit, String sortField) {
-        List<LoanEntity> appliedLoans = loanRepository.getAppliedLoans(offset, limit, sortField);
-        return loanMapper.entityToDomain(appliedLoans);
+    public List<Loan> getAppliedLoans(Integer page, Integer pageSize) {
+        Page<LoanEntity> appliedLoans = loanRepository.getLoanEntityByLoanStatus(LoanStatus.APPLIED, PageRequest.of(page, pageSize));
+        return loanMapper.entityToDomain(appliedLoans.getContent());
     }
 }
