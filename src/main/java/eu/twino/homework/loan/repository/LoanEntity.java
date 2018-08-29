@@ -2,16 +2,20 @@ package eu.twino.homework.loan.repository;
 
 import eu.twino.homework.loan.LoanStatus;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 public class LoanEntity {
 
     @Id
+    @Column(unique = true)
     private String personalId;
+
     private String applierName;
     private String applierSurname;
     private BigDecimal amount;
@@ -90,5 +94,18 @@ public class LoanEntity {
     public LoanEntity setLoanStatus(LoanStatus loanStatus) {
         this.loanStatus = loanStatus;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LoanEntity that = (LoanEntity) o;
+        return Objects.equals(personalId, that.personalId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(personalId);
     }
 }

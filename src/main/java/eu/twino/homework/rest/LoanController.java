@@ -40,8 +40,10 @@ public class LoanController {
 
     @PostMapping
     public void applyForLoan(@RequestBody @Valid LoanRequestDto loanRequestDto, HttpServletRequest request) {
+        String originCountry = WebUtils.getClientIp(request)
+                .flatMap(countryResolver::getCountryCode)
+                .orElse("LV");
 
-        String originCountry = countryResolver.getCountryCode(request).orElse("LV");
         LoanRequest loanRequest = loanMapper.dtoToRequest(loanRequestDto, originCountry);
         loanService.applyForLoan(loanRequest);
     }

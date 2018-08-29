@@ -20,6 +20,7 @@ public class LoanRepositoryCustomImpl implements LoanRepositoryCustom {
     public List<LoanEntity> getAppliedLoans(Integer limit, Integer offset, String sortField) {
         String jpql = "select loanEntity from LoanEntity loanEntity";
 
-        return entityManager.createQuery(jpql, LoanEntity.class).setMaxResults(limit).setFirstResult(offset).getResultList();
+        return entityManager.createQuery(jpql, LoanEntity.class)
+                .setMaxResults(limit).setFirstResult(offset).getResultList();
     }
 }
